@@ -24,6 +24,14 @@ export default class ElementPlus {
 		return this[__internal_state_map];
 	}
 
+	/*
+	 *  // set the id of the state you are setting equal
+	 *  // to the name of the variable in the first item
+	 *  // of the destructured array
+	 *	const [count, setCount] = this.useState('count', 0);
+	 *
+	 *  // This will make it easier to track when debugging
+	 */
 	useState(id, initialState) {
 		// set the initial state as current internal state
 		let currentInternalState = this.__internal_state
@@ -45,16 +53,6 @@ export default class ElementPlus {
 
 		// then return the new internal state and call back
 		return [currentInternalState, setStateCallback];
-
-		// this should then be used like this
-		/*
-		 *  // set the id of the state you are setting equal
-		 *  // to the name of the variable in the first item
-		 *  // of the destructured array
-		 *	const [count, setCount] = this.useState('count', 0);
-		 *
-		 *  // This will make it easier to track when debugging
-		 */
 	}
 
 	static get templateStyles() {
