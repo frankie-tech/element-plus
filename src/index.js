@@ -7,6 +7,10 @@ export default class ElementPlus {
 	}
 
 	constructor(selector) {
+		const beforeConstructCallbackResults = this.beforeConstructCallback(
+			selector
+		);
+
 		this.selector = selector;
 		this.refs = new Proxy(
 			{},
@@ -17,7 +21,7 @@ export default class ElementPlus {
 
 		this.__evts = {};
 
-		this.onConstructCallback();
+		this.onConstructCallback(beforeConstructCallbackResults);
 		this.emitEvent('Constructed');
 	}
 
@@ -131,5 +135,11 @@ export default class ElementPlus {
 		document.dispatchEvent(event);
 	}
 
-	onConstructCallback() {}
+	beforeConstructCallback() {}
+	/**
+	 * onConstructCallback
+	 *
+	 * @param {any} beforeConstructCallbackResults - meant to be entirely optional and is undefined unless you use beforeConstructCallback
+	 */
+	onConstructCallback(beforeConstructCallbackResults) {}
 }
