@@ -1,13 +1,13 @@
 {
-	"name": "simple-package",
+	"name": "element-plus",
 	"version": "0.0.1",
-	"description": "Template repo for building simple packages",
+	"description": "A base class that makes it easier to build components off of",
 	"main": "dist/index.js",
 	"module": "dist/index.js",
-	"source": "src/index.ts",
+	"source": "src/index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "microbundle -f modern,umd",
+		"build": "microbundle -f modern,umd --name=ElementPlus",
 		"dev": "microbundle watch --compress=false -f modern,umd --raw=true --no-sourcemap",
 		"clean": "rm -rf dist",
 		"start": "npm-run-all clean dev",
