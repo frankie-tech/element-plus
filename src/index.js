@@ -2,6 +2,10 @@
 const __internal_state_map = Symbol('__internal_state_map');
 
 export default class ElementPlus {
+	[Symbol.toStringTag]() {
+		return 'ElementPlus';
+	}
+
 	constructor(selector) {
 		this.selector = selector;
 		this.refs = new Proxy(
@@ -11,7 +15,7 @@ export default class ElementPlus {
 			}
 		);
 
-		this.events = new Map();
+		this.__evts = {};
 
 		this.onConstructCallback();
 		this.emitEvent('Constructed');
@@ -42,8 +46,7 @@ export default class ElementPlus {
 		const setStateCallback = updatedStateOrCallback => {
 			// check if the argument is a new state or a callback
 			let updatedState =
-				Object.prototype.toString.call(updatedStateOrCallback) ===
-				'[object Function]'
+				{}.toString.call(updatedStateOrCallback) === '[object Function]'
 					? updatedStateOrCallback(this.__internal_state.get(id))
 					: updatedStateOrCallback;
 
@@ -115,14 +118,14 @@ export default class ElementPlus {
 
 	emitEvent(name, detail = {}) {
 		name = this.constructor.name + '::' + name;
-		let event = this.events.get(name);
+		let event = name in this.__evts;
 		if (!event) {
 			event = new CustomEvent(name, {
 				bubbles: true,
 				detail,
 			});
 
-			this.events.set(name, event);
+			this.__evts[name] = event;
 		}
 
 		document.dispatchEvent(event);
