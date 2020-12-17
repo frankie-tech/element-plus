@@ -1,15 +1,20 @@
+// @ts-check
 // creates a pseudo private state map, can still be accessed, its just a hassle to do so.
 const __internal_state_map = Symbol('__internal_state_map');
 
+/** @class */
 export default class ElementPlus {
 	[Symbol.toStringTag]() {
 		return 'ElementPlus';
 	}
 
+	/**
+	 *
+	 * @param {string} selector - added as a class and ID;
+	 */
 	constructor(selector) {
-		const beforeConstructCallbackResults = this.beforeConstructCallback(
-			selector
-		);
+		// prettier-ignore
+		const beforeConstructCallbackResults = this.beforeConstructCallback(selector);
 
 		this.selector = selector;
 		this.refs = new Proxy(
@@ -23,6 +28,9 @@ export default class ElementPlus {
 
 		this.onConstructCallback(beforeConstructCallbackResults);
 		this.emitEvent('Constructed');
+
+		/** @type {HTMLElement} */
+		this.el = null;
 	}
 
 	get __internal_state() {
@@ -39,6 +47,11 @@ export default class ElementPlus {
 	 *	const [count, setCount] = this.useState('count', 0);
 	 *
 	 *  // This will make it easier to track when debugging
+	 */
+	/**
+	 *
+	 * @param {string} id - state key, should be same as variable
+	 * @param {unknown} initialState - starting state, can be anything but will be changed by callback in return[1]
 	 */
 	useState(id, initialState) {
 		// set the initial state as current internal state
@@ -93,15 +106,26 @@ export default class ElementPlus {
 		return this.__styleEl;
 	}
 
+	/**
+	 * @returns
+	 */
 	get content() {
 		// gets the document fragment from the template element -cw src: https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode + https://github.com/AdaRoseCannon/html-element-plus/blob/master/html-element-plus.js#L52-L54
-		return {
+		const content = {
+			/** @type {HTMLElement} */
 			template: document.importNode(
+				// @ts-ignore
 				this.constructor.template.content,
 				true
 			),
-			styles: document.importNode(this.constructor.styles.content, true),
+			/** @type {HTMLStyleElement} */
+			styles: document.importNode(
+				// @ts-ignore
+				this.constructor.styles.content,
+				true
+			),
 		};
+		return content;
 	}
 
 	// Convert the class selector into a PascalCase ID to apply to the template
@@ -116,30 +140,43 @@ export default class ElementPlus {
 		return this.__id;
 	}
 
+	/**
+	 * QuerySelector for the constructed element
+	 * @param {unknown} target
+	 * @param {string} name - reference to query for
+	 */
 	__queryElement(target, name) {
 		return this.el.querySelector('[ref="' + name + '"]');
 	}
 
+	/**
+	 *
+	 * @param {string} name - event name, is prefixed with constructed elements name and a double colon
+	 * @param {object} detail - a custom detail for the CustomEvent
+	 */
 	emitEvent(name, detail = {}) {
 		name = this.constructor.name + '::' + name;
-		let event = name in this.__evts;
-		if (!event) {
-			event = new CustomEvent(name, {
+		let hasEvent = name in this.__evts;
+		if (!hasEvent) {
+			this.__evts[name] = new CustomEvent(name, {
 				bubbles: true,
 				detail,
 			});
-
-			this.__evts[name] = event;
 		}
 
-		document.dispatchEvent(event);
+		document.dispatchEvent(this.__evts[name]);
 	}
 
-	beforeConstructCallback() {}
+	/**
+	 *
+	 * @param {string} selector - optional string for selector
+	 * @returns {any}
+	 */
+	beforeConstructCallback(selector = '') {}
 	/**
 	 * onConstructCallback
 	 *
-	 * @param {any} beforeConstructCallbackResults - meant to be entirely optional and is undefined unless you use beforeConstructCallback
+	 * @param {unknown} beforeConstructCallbackResults - meant to be entirely optional and is undefined unless you use beforeConstructCallback
 	 */
-	onConstructCallback(beforeConstructCallbackResults) {}
+	onConstructCallback(beforeConstructCallbackResults = null) {}
 }
