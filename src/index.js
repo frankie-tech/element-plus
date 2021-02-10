@@ -71,11 +71,9 @@ export default class ElementPlus {
 		// gets the document fragment from the template element -cw src: https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode + https://github.com/AdaRoseCannon/html-element-plus/blob/master/html-element-plus.js#L52-L54
 		const content = {
 			/** @type {HTMLElement} */
-			template: document.importNode(
+			template:
 				// @ts-ignore
 				this.constructor.template.content,
-				true
-			),
 			/** @type {HTMLStyleElement} */
 			styles: document.importNode(
 				// @ts-ignore
@@ -130,12 +128,12 @@ export default class ElementPlus {
 	 * @param {string} selector - optional string for selector
 	 * @returns {any}
 	 */
-	onBeforeConstructCallback(selector = '') { }
+	onBeforeConstructCallback(selector = '') {}
 
 	/**
 	 * onConstructCallback
 	 *
 	 * @param {unknown} beforeConstructCallbackResults - meant to be entirely optional and is undefined unless you use beforeConstructCallback
 	 */
-	onConstructCallback(beforeConstructCallbackResults = null) { }
+	onConstructCallback(beforeConstructCallbackResults = null) {}
 }
