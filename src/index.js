@@ -14,7 +14,7 @@ export default class ElementPlus {
 	 */
 	constructor(selector) {
 		// prettier-ignore
-		const beforeConstructCallbackResults = this.beforeConstructCallback(selector);
+		const onBeforeConstructCallbackResults = this.onBeforeConstructCallback(selector);
 
 		this.selector = selector;
 		this.refs = new Proxy(
@@ -26,7 +26,7 @@ export default class ElementPlus {
 
 		this.__evts = {};
 
-		this.onConstructCallback(beforeConstructCallbackResults);
+		this.onConstructCallback(onBeforeConstructCallbackResults);
 		this.emitEvent('Constructed');
 
 		/** @type {HTMLElement} */
@@ -106,9 +106,6 @@ export default class ElementPlus {
 		return this.__styleEl;
 	}
 
-	/**
-	 * @returns
-	 */
 	get content() {
 		// gets the document fragment from the template element -cw src: https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode + https://github.com/AdaRoseCannon/html-element-plus/blob/master/html-element-plus.js#L52-L54
 		const content = {
@@ -172,11 +169,12 @@ export default class ElementPlus {
 	 * @param {string} selector - optional string for selector
 	 * @returns {any}
 	 */
-	beforeConstructCallback(selector = '') {}
+	onBeforeConstructCallback(selector = '') { }
+
 	/**
 	 * onConstructCallback
 	 *
 	 * @param {unknown} beforeConstructCallbackResults - meant to be entirely optional and is undefined unless you use beforeConstructCallback
 	 */
-	onConstructCallback(beforeConstructCallbackResults = null) {}
+	onConstructCallback(beforeConstructCallbackResults = null) { }
 }
