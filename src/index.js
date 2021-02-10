@@ -75,11 +75,9 @@ export default class ElementPlus {
 				// @ts-ignore
 				this.constructor.template.content,
 			/** @type {HTMLStyleElement} */
-			styles: document.importNode(
-				// @ts-ignore
-				this.constructor.styles.content,
-				true
-			),
+			styles:
+				//	@ts-ignore
+				this.onConstructCallbackor.styles.content.firstElementChild,
 		};
 		return content;
 	}
@@ -98,7 +96,7 @@ export default class ElementPlus {
 
 	/**
 	 * QuerySelector for the constructed element
-	 * @param {unknown} target
+	 * @param {unknown} target - ignore this param
 	 * @param {string} name - reference to query for
 	 */
 	__queryElement(target, name) {
