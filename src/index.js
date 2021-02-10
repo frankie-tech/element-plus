@@ -1,6 +1,5 @@
 // @ts-check
-
-import { useState } from './hook';
+import { useState, hooked, useReducer } from './hook';
 
 // creates a pseudo private state map, can still be accessed, its just a hassle to do so.
 const __internal_state_map = Symbol('__internal_state_map');
@@ -35,48 +34,6 @@ export default class ElementPlus {
 
 		/** @type {HTMLElement} */
 		this.el = null;
-	}
-
-	get __internal_state() {
-		// use the previously defined symbol to access the map, hiding it behind the symbol
-		if (!this[__internal_state_map]) this[__internal_state_map] = new Map();
-
-		return this[__internal_state_map];
-	}
-
-	/*
-	 *  // set the id of the state you are setting equal
-	 *  // to the name of the variable in the first item
-	 *  // of the destructured array
-	 *	const [count, setCount] = this.useState('count', 0);
-	 *
-	 *  // This will make it easier to track when debugging
-	 */
-	/**
-	 *
-	 * @param {string} id - state key, should be same as variable
-	 * @param {unknown} initialState - starting state, can be anything but will be changed by callback in return[1]
-	 */
-	useState(id, initialState) {
-		// set the initial state as current internal state
-		let currentInternalState = this.__internal_state
-			.set(id, initialState)
-			.get(id);
-
-		// create the setStateCallback
-		const setStateCallback = updatedStateOrCallback => {
-			// check if the argument is a new state or a callback
-			let updatedState =
-				{}.toString.call(updatedStateOrCallback) === '[object Function]'
-					? updatedStateOrCallback(this.__internal_state.get(id))
-					: updatedStateOrCallback;
-
-			// then set the new state and return the updated state
-			return this.__internal_state.set(id, updatedState).get(id);
-		};
-
-		// then return the new internal state and call back
-		return [currentInternalState, setStateCallback];
 	}
 
 	static get templateStyles() {
