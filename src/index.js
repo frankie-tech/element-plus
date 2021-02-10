@@ -1,4 +1,7 @@
 // @ts-check
+
+import { useState } from './hook';
+
 // creates a pseudo private state map, can still be accessed, its just a hassle to do so.
 const __internal_state_map = Symbol('__internal_state_map');
 
@@ -24,6 +27,7 @@ export default class ElementPlus {
 			}
 		);
 
+		this.useState = useState
 		this.__evts = {};
 
 		this.onConstructCallback(onBeforeConstructCallbackResults);
