@@ -77,21 +77,9 @@ export default class ElementPlus {
 			/** @type {HTMLStyleElement} */
 			styles:
 				//	@ts-ignore
-				this.onConstructCallbackor.styles.content.firstElementChild,
+				this.constructor.styles.content.firstElementChild,
 		};
 		return content;
-	}
-
-	// Convert the class selector into a PascalCase ID to apply to the template
-	get id() {
-		// split at the dash, capitalize the first letter, rejoin with no space;
-		if (!this.__id)
-			this.__id = this.selector
-				.slice(1, this.selector.length)
-				.split('-')
-				.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-				.join('');
-		return this.__id;
 	}
 
 	/**
@@ -110,15 +98,13 @@ export default class ElementPlus {
 	 */
 	emitEvent(name, detail = {}) {
 		name = this.constructor.name + '::' + name;
-		let hasEvent = name in this.__evts;
-		if (!hasEvent) {
-			this.__evts[name] = new CustomEvent(name, {
-				bubbles: true,
-				detail,
-			});
-		}
 
-		document.dispatchEvent(this.__evts[name]);
+		this.__evts[name] = new CustomEvent(name, {
+			bubbles: true,
+			detail,
+		});
+
+		this.el.dispatchEvent(this.__evts[name]);
 	}
 
 	/**
