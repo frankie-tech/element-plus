@@ -13,9 +13,10 @@ export default class ElementPlus {
 	 */
 	constructor(selector) {
 		// prettier-ignore
-		const onBeforeConstructCallbackResults = this.onBeforeConstructCallback(selector);
+		// const onBeforeConstructCallbackResults = this.onBeforeConstructCallback(selector);
 
-		this.selector = selector;
+		/** @type {HTMLElement} */
+		this.el = document.getElementById(selector);
 		this.refs = new Proxy(
 			{},
 			{
@@ -27,11 +28,19 @@ export default class ElementPlus {
 		this.useReducer = useReducer;
 		this.hooked = hooked;
 
-		this.onConstructCallback(onBeforeConstructCallbackResults);
-		this.emitEvent('Constructed');
+		const constructionPromise = new Promise((res, rej) =>
+			this.beforeConstructCallback(selector, res, rej)
+		);
 
-		/** @type {HTMLElement} */
-		this.el = null;
+		// @ts-ignore
+		// this.onConstructCallback(onBeforeConstructCallbackResults);
+
+		constructionPromise
+			.then(
+				(...args) => this.constructCallback.apply(this, ...args),
+				this.constructErrorCallback
+			)
+			.then(() => this.emitEvent('Constructed'));
 	}
 
 	static get templateStyles() {
@@ -100,20 +109,30 @@ export default class ElementPlus {
 			detail,
 		});
 
-		this.el.dispatchEvent(evt);
+		document.dispatchEvent(evt);
 	}
 
 	/**
 	 *
-	 * @param {string} selector - optional string for selector
+	 * @param {string} [selector] - optional string for selector
+	 * @param {(value: any) => void} [resolve]
+	 * @param {(reason: any) => void} [reject]
 	 * @returns {any}
 	 */
-	onBeforeConstructCallback(selector = '') {}
+	beforeConstructCallback(selector, resolve, reject) {}
+
+	/**
+	 * @param {(reason: any) => PromiseLike<never>} reason
+	 */
+	constructErrorCallback(reason) {
+		throw reason;
+	}
 
 	/**
 	 * onConstructCallback
 	 *
 	 * @param {unknown} beforeConstructCallbackResults - meant to be entirely optional and is undefined unless you use beforeConstructCallback
+	 * @returns {any}
 	 */
-	onConstructCallback(beforeConstructCallbackResults = null) {}
+	constructCallback(beforeConstructCallbackResults) {}
 }
