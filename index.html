@@ -12,29 +12,56 @@
 			import ElementPlus from './dist/index.modern.js';
 
 			class Modal extends ElementPlus {
-				constructor() {
-					super();
+				constructor(selector) {
+					super(selector);
+				}
+
+				get modalSupport() {
+					return typeof HTMLDialogElement !== undefined;
 				}
 
 				static get templateHTML() {
 					return `<div ref="root">
-								<h1>Test Modal</h1>
+								<h1>Modal Button</h1>
+								<button ref="open">Open Modal</button>
+								<dialog ref="modal">
+									<h1>This is the open modal</h1>
+								</dialog>
 							</div>`;
 				}
 
-				onBeforeConstructCallback() {
-					this.el = app;
-				}
-
-				onConstructCallback() {
+				beforeConstructCallback(_, res, rej) {
 					this.el.insertAdjacentElement(
 						'beforeend',
 						this.content.template.firstElementChild
 					);
+					res();
+				}
+
+				constructCallback() {
+					// const openModal = this.openModalHandler.bind(this);
+
+					const modalCallback = function (e) {
+						console.log(e.target, this.refs.open);
+
+						if (!this.modalSupport) return;
+
+						if (e.target.closest('modal[open]')) return;
+
+						if (e.target.matches('[refs="modal"]'))
+							return this.refs.modal.close();
+
+						if (e.target.matches('[refs="open"]'))
+							this.refs.modal.showModal();
+					}.bind(this);
+
+					document.addEventListener('click', modalCallback, true);
 				}
 			}
 
-			let M = new Modal('modal');
+			document.addEventListener('Modal::Constructed', console.log);
+
+			let M = new Modal('app');
 		</script>
 	</body>
 </html>
