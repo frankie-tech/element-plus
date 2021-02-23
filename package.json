@@ -8,7 +8,7 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "microbundle -f modern",
-		"dev": "microbundle watch --compress=false -f modern --raw=true --no-sourcemap --name=ElementPlus",
+		"dev": "microbundle watch --compress=false -f modern --raw=true --no-sourcemap",
 		"clean": "rm -rf dist",
 		"start": "npm-run-all clean dev",
 		"bundle": "npm-run-all clean build"
