@@ -27,8 +27,6 @@ export default class ElementPlus {
 		this.useReducer = useReducer;
 		this.hooked = hooked;
 
-		this.__evts = {};
-
 		this.onConstructCallback(onBeforeConstructCallbackResults);
 		this.emitEvent('Constructed');
 
@@ -97,14 +95,12 @@ export default class ElementPlus {
 	 * @param {object} detail - a custom detail for the CustomEvent
 	 */
 	emitEvent(name, detail = {}) {
-		name = this.constructor.name + '::' + name;
-
-		this.__evts[name] = new CustomEvent(name, {
+		const evt = new CustomEvent(this.constructor.name + '::' + name, {
 			bubbles: true,
 			detail,
 		});
 
-		this.el.dispatchEvent(this.__evts[name]);
+		this.el.dispatchEvent(evt);
 	}
 
 	/**
