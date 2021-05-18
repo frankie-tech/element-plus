@@ -53,7 +53,7 @@ export default class ElementPlus {
 	get content() {
 		// gets the document fragment from the template element -cw src: https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode + https://github.com/AdaRoseCannon/html-element-plus/blob/master/html-element-plus.js#L52-L54
 		// @ts-ignore
-		return this.constructor.template.content;
+		return document.importNode(this.constructor.template.content, true);
 	}
 
 	/**
