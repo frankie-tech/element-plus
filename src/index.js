@@ -8,13 +8,10 @@ export default class ElementPlus {
 	}
 
 	/**
-	 *
 	 * @param {string} selector - added as a class and ID;
+	 * @param { { [key:string]:unknown } } props - a props object
 	 */
-	constructor(selector) {
-		// prettier-ignore
-		// const onBeforeConstructCallbackResults = this.onBeforeConstructCallback(selector);
-
+	constructor(selector, props) {
 		/** @type {HTMLElement} */
 		this.el = document.getElementById(selector);
 		this.refs = new Proxy(
@@ -32,19 +29,12 @@ export default class ElementPlus {
 			this.beforeConstructCallback(selector, res, rej)
 		);
 
-		// @ts-ignore
-		// this.onConstructCallback(onBeforeConstructCallbackResults);
-
 		constructionPromise
 			.then(
 				(...args) => this.constructCallback.apply(this, ...args),
 				this.constructErrorCallback
 			)
 			.then(() => this.emitEvent('Constructed'));
-	}
-
-	static get templateStyles() {
-		return ``;
 	}
 
 	static get templateHTML() {
@@ -60,33 +50,10 @@ export default class ElementPlus {
 		return this.__templateEl;
 	}
 
-	static get styles() {
-		if (this.__styleEl) return this.__styleEl;
-
-		this.__styleEl = document.createElement('template');
-
-		// Adds style element to template element minifying the styles at the same times
-		this.__styleEl.innerHTML = `<style>${this.templateStyles}</style>`.replace(
-			/ {4}|[\t\n\r]/gm,
-			''
-		);
-
-		return this.__styleEl;
-	}
-
 	get content() {
 		// gets the document fragment from the template element -cw src: https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode + https://github.com/AdaRoseCannon/html-element-plus/blob/master/html-element-plus.js#L52-L54
-		const content = {
-			/** @type {HTMLElement} */
-			template:
-				// @ts-ignore
-				this.constructor.template.content,
-			/** @type {HTMLStyleElement} */
-			styles:
-				//	@ts-ignore
-				this.constructor.styles.content.firstElementChild,
-		};
-		return content;
+		// @ts-ignore
+		return this.constructor.template.content;
 	}
 
 	/**
@@ -99,7 +66,6 @@ export default class ElementPlus {
 	}
 
 	/**
-	 *
 	 * @param {string} name - event name, is prefixed with constructed elements name and a double colon
 	 * @param {object} detail - a custom detail for the CustomEvent
 	 */
@@ -113,7 +79,6 @@ export default class ElementPlus {
 	}
 
 	/**
-	 *
 	 * @param {string} [selector] - optional string for selector
 	 * @param {(value: any) => void} [resolve]
 	 * @param {(reason: any) => void} [reject]
@@ -129,8 +94,6 @@ export default class ElementPlus {
 	}
 
 	/**
-	 * onConstructCallback
-	 *
 	 * @param {unknown} beforeConstructCallbackResults - meant to be entirely optional and is undefined unless you use beforeConstructCallback
 	 * @returns {any}
 	 */
