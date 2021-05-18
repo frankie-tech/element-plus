@@ -69,13 +69,13 @@ export default class ElementPlus {
 	 * @param {string} name - event name, is prefixed with constructed elements name and a double colon
 	 * @param {object} detail - a custom detail for the CustomEvent
 	 */
-	emitEvent(name, detail = {}) {
+	emitEvent(name, detail = {}, target = document) {
 		const evt = new CustomEvent(this.constructor.name + '::' + name, {
 			bubbles: true,
 			detail,
 		});
 
-		document.dispatchEvent(evt);
+		target.dispatchEvent(evt);
 	}
 
 	/**
