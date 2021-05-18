@@ -28,17 +28,6 @@ export default class ElementPlus {
 		this.useState = useState;
 		this.useReducer = useReducer;
 		this.hooked = hooked;
-
-		const constructionPromise = new Promise((res, rej) =>
-			this.beforeConstructCallback({ selector, props }, res, rej)
-		);
-
-		constructionPromise
-			.then(
-				(...args) => this.constructCallback.apply(this, ...args),
-				this.constructErrorCallback
-			)
-			.then(() => this.emitEvent('Constructed'));
 	}
 
 	static get templateHTML() {
@@ -81,27 +70,4 @@ export default class ElementPlus {
 
 		target.dispatchEvent(evt);
 	}
-
-	/**
-	 * @param {object} arg1
-	 * @param {string} [arg1.selector] - optional string for selector
-	 * @param {ElementPlusProps} [arg1.props]
-	 * @param {(value: any) => void} [resolve]
-	 * @param {(reason: any) => void} [reject]
-	 * @returns {any}
-	 */
-	beforeConstructCallback({ selector, props }, resolve, reject) {}
-
-	/**
-	 * @param {(reason: any) => PromiseLike<never>} reason
-	 */
-	constructErrorCallback(reason) {
-		throw reason;
-	}
-
-	/**
-	 * @param {unknown} beforeConstructCallbackResults - meant to be entirely optional and is undefined unless you use beforeConstructCallback
-	 * @returns {any}
-	 */
-	constructCallback(beforeConstructCallbackResults) {}
 }
