@@ -1,6 +1,10 @@
 // @ts-check
 import { useState, hooked, useReducer } from './hook';
 
+/**
+ * @typedef { { [key:string]: unknown } } ElementPlusProps
+ */
+
 /** @class */
 export default class ElementPlus {
 	[Symbol.toStringTag]() {
@@ -9,7 +13,7 @@ export default class ElementPlus {
 
 	/**
 	 * @param {string} selector - added as a class and ID;
-	 * @param { { [key:string]:unknown } } props - a props object
+	 * @param {ElementPlusProps} props - a props object
 	 */
 	constructor(selector, props) {
 		/** @type {HTMLElement} */
@@ -26,7 +30,7 @@ export default class ElementPlus {
 		this.hooked = hooked;
 
 		const constructionPromise = new Promise((res, rej) =>
-			this.beforeConstructCallback(selector, res, rej)
+			this.beforeConstructCallback({ selector, props }, res, rej)
 		);
 
 		constructionPromise
@@ -79,12 +83,14 @@ export default class ElementPlus {
 	}
 
 	/**
-	 * @param {string} [selector] - optional string for selector
+	 * @param {object} arg1
+	 * @param {string} [arg1.selector] - optional string for selector
+	 * @param {ElementPlusProps} [arg1.props]
 	 * @param {(value: any) => void} [resolve]
 	 * @param {(reason: any) => void} [reject]
 	 * @returns {any}
 	 */
-	beforeConstructCallback(selector, resolve, reject) {}
+	beforeConstructCallback({ selector, props }, resolve, reject) {}
 
 	/**
 	 * @param {(reason: any) => PromiseLike<never>} reason
