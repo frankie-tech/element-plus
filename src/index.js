@@ -17,7 +17,7 @@ export default class ElementPlus {
 	 */
 	constructor(selector, props) {
 		/** @type {HTMLElement} */
-		this.el = document.getElementById(selector);
+		this.el = document.querySelector(selector);
 		this.refs = new Proxy(
 			{},
 			{
