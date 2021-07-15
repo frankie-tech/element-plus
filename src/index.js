@@ -1,5 +1,4 @@
 // @ts-check
-import { useState, hooked, useReducer } from './hook';
 
 /**
  * @typedef { { [key:string]: unknown } } ElementPlusProps
@@ -24,10 +23,6 @@ export default class ElementPlus {
 				get: this.__queryElement.bind(this),
 			}
 		);
-
-		this.useState = useState;
-		this.useReducer = useReducer;
-		this.hooked = hooked;
 	}
 
 	static get templateHTML() {
