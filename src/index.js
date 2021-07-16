@@ -4,25 +4,25 @@
  * @typedef { { [key:string]: unknown } } ElementPlusProps
  */
 
-/** @class */
 export default class ElementPlus {
 	[Symbol.toStringTag]() {
 		return 'ElementPlus';
 	}
 
 	/**
-	 * @param {string} selector - added as a class and ID;
+	 * @param {string|HTMLElement} element - added as a class and ID;
 	 * @param {ElementPlusProps} props - a props object
 	 */
-	constructor(selector, props) {
+	constructor(element, props) {
 		/** @type {HTMLElement} */
-		this.el = document.querySelector(selector);
+		this.el = element instanceof HTMLElement ? element : document.querySelector(element);
 		this.refs = new Proxy(
 			{},
 			{
 				get: this.__queryElement.bind(this),
 			}
 		);
+		this.eventPrefix = props.eventPrefix || this.constructor.name.toLowerCase();
 	}
 
 	static get templateHTML() {
@@ -50,19 +50,23 @@ export default class ElementPlus {
 	 * @param {string} name - reference to query for
 	 */
 	__queryElement(target, name) {
-		return this.el.querySelector('[ref="' + name + '"]');
+		if (name[0] === '$') {
+			return [...this.el.querySelectorAll('[data-ref="' + name.slice(1) + '"]')];
+		}
+		return this.el.querySelector('[data-ref="' + name + '"]');
 	}
 
 	/**
 	 * @param {string} name - event name, is prefixed with constructed elements name and a double colon
 	 * @param {object} detail - a custom detail for the CustomEvent
+	 * @param {HTMLElement|null} target - dispatchEvent target
 	 */
-	emitEvent(name, detail = {}, target = document) {
-		const evt = new CustomEvent(this.constructor.name + '::' + name, {
+	dispatchEvent(name, detail = {}, target = null) {
+		const evt = new CustomEvent(this.eventPrefix + ':' + name, {
 			bubbles: true,
 			detail,
 		});
 
-		target.dispatchEvent(evt);
+		(target || this.el).dispatchEvent(evt);
 	}
 }
